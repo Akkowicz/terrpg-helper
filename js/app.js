@@ -23,31 +23,53 @@ function getRandomNumber(min, max) {
 function displayData() {
     document.getElementById("health-display").innerText = healthPoints.toString();
     document.getElementById("power-display").innerText = powerPoints.toString();
+
+    if (localStorage.getItem("dead") === "true") {
+        document.getElementById("dead-msg").classList.remove("is-hidden");
+    } else {
+        document.getElementById("dead-msg").classList.add("is-hidden");
+    }
 }
 
 function addPower() {
-    powerPoints += 1;
+    if (powerPoints < 16) {
+        powerPoints += 1;
+    }
     saveDataToStorage();
     displayData();
 }
 
 function addHealth() {
-    healthPoints += 1;
-    saveDataToStorage();
-    displayData();
-}
+    if (healthPoints < 16) {
+        healthPoints += 1;
+    }
 
-function delPower() {
-    powerPoints -= 1;
+    if (healthPoints > 0) {
+        localStorage.setItem("dead", "false");
+    }
     saveDataToStorage();
     displayData();
 }
 
 function delHealth() {
-    healthPoints -= 1;
+    if (healthPoints > 0) {
+        healthPoints -= 1;        
+    }
+    if (healthPoints <= 0) {
+        localStorage.setItem("dead", "true");
+    }
     saveDataToStorage();
     displayData();
 }
+
+function delPower() {
+    if (powerPoints > 0) {
+        powerPoints -= 1;
+    }
+    saveDataToStorage();
+    displayData();
+}
+
 
 function loadDataFromStorage() {
     healthPoints = parseInt(localStorage.getItem("health"));
@@ -65,6 +87,10 @@ function initData() {
     }
     if (localStorage.getItem("power") === null) {
         localStorage.setItem("power", "0");
+    }
+
+    if (localStorage.getItem("dead") === null) {
+        localStorage.setItem("dead", "false");
     }
 
     loadDataFromStorage();
